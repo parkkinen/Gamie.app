@@ -60,7 +60,7 @@ public class ChatActivity extends Activity {
 				// ---create a socket---
 				serverAddress = InetAddress.getByName(SERVER_IP_ADDRESS);
 				socket = new Socket(serverAddress, 7001); //IP, PORT NUMBER
-				CommunicationThread communicationThread = new CommunicationThread(socket);
+				communicationThread = new CommunicationThread(socket);
 				communicationThread.start();
 				// ---sign in for the user; sends the nick name---
 				sendToServer(NICKNAME);
