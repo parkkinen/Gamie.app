@@ -10,6 +10,29 @@ public class IGDBScreenshot {
     public Integer id;
     public String url;
 
+    public enum IGDBScreenshotSize {
+        COVER_SMALL("t_cover_small"),
+        SCREENSHOT_MED("t_screenshot_med"),
+        COVER_BIG("t_cover_big"),
+        LOGO_MED("t_logo_med"),
+        SCREENSHOT_BIG("t_screenshot_big"),
+        SCREENSHOT_HUGE("t_screenshot_huge"),
+        THUMB("t_thumb"),
+        MICRO("t_micro"),
+        HD("t_720p"),
+        FHD("t_1080p");
+
+        private String size;
+
+        IGDBScreenshotSize(String screenSize) {
+            this.size = screenSize;
+        }
+
+        public String getSize() {
+            return size;
+        }
+    }
+
     IGDBScreenshot(JSONObject json) {
         try {
             this.id = json.getInt("id");
@@ -17,6 +40,12 @@ public class IGDBScreenshot {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getImageUrl(IGDBScreenshotSize size) {
+        String url = this.url.substring(2);
+        url.replace(IGDBScreenshotSize.THUMB.getSize(), size.getSize());
+        return String.format("https://%s", url);
     }
 
     static List<IGDBScreenshot> getScreenshots(JSONArray json) {
