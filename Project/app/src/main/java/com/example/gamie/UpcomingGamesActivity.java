@@ -92,7 +92,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(UpcomingGamesActivity.this, String.format("There is currently no more than %d pages available!", MAX_PAGE), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpcomingGamesActivity.this, String.format("There is currently no more than %d pages available!", MAX_PAGE + 1), Toast.LENGTH_SHORT).show();
                 }
             });
         }
