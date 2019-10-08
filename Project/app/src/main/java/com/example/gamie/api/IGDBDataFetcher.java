@@ -31,31 +31,49 @@ public class IGDBDataFetcher {
     public static final String GENRES_POSTFIX = "genres";
     public static final String GAMEMODES_POSTFIX = "game_modes";
     public static final String PLATFORMS_POSTFIX = "platforms";
+    public static final String RELEASEDATES_POSTFIX = "release_dates";
+
+    public IGDBDataFetcher(Context context) {
+        this.queue = Volley.newRequestQueue(context);
+        this.onError = null;
+    }
+
+    public IGDBDataFetcher(Context context, OnError onError) {
+        this.queue = Volley.newRequestQueue(context);
+        this.onError = onError;
+    }
+
 
     /* Public Interfaces */
 
     public interface OnGetGames {
-        void games(List<IGDBGame> games);
-        void error(String e);
+        void games(List<IGDBGame> games, String tag);
     }
 
     public interface OnGetGenres {
-        void genres(List<IGDBGenre> genres);
-        void error(String e);
+        void genres(List<IGDBGenre> genres, String tag);
     }
 
     public interface OnGetGameModes {
-        void gameModes(List<IGDBGameMode> gameModes);
-        void error(String e);
+        void gameModes(List<IGDBGameMode> gameModes, String tag);
     }
 
     public interface OnGetPlatforms {
-        void platforms(List<IGDBPlatform> platforms);
-        void error(String e);
+        void platforms(List<IGDBPlatform> platforms, String tag);
     }
 
-    public IGDBDataFetcher(Context context) {
-        this.queue = Volley.newRequestQueue(context);
+    public interface OnGetReleaseDates {
+        void releaseDates(List<IGDBReleaseDate> releaseDates, String tag);
+    }
+
+    public interface OnError {
+        void error(String error, String tag);
+    }
+
+    private OnError onError;
+
+    public void setOnError(OnError onError) {
+        this.onError = onError;
     }
 
     private RequestQueue queue;
@@ -64,8 +82,9 @@ public class IGDBDataFetcher {
 
     // Get games from IGDB api. Calls set OnRequest interfaces foundGames function once finished. Calls error if one occurred during search.
     // onGetGames: OnGetGames interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
-    public void getGames(@Nullable OnGetGames onGetGames, String... options) {
+    public void getGames(@Nullable OnGetGames onGetGames, @Nullable String tag, String... options) {
         String[] gamesOptions = Stream.of(options, new String[] {
                 "fields *, game_modes.name, genres.name, screenshots.url, platforms.name, cover.url",
                 "exclude aggregated_rating,aggregated_rating_count, updated_at, external_games"
@@ -75,23 +94,28 @@ public class IGDBDataFetcher {
                     if (onGetGames != null) {
                         try {
                             JSONArray jsonArr = new JSONArray(response);
-                            onGetGames.games(IGDBGame.getGames(jsonArr));
+                            onGetGames.games(IGDBGame.getGames(jsonArr), tag);
                         } catch (Exception e) {
-                            onGetGames.error(e.toString());
+                            e.printStackTrace();
+                            if (this.onError != null) {
+                                this.onError.error(e.toString(), tag);
+                            }
                         }
                     }
                 } ,
                 error -> {
-                    if (onGetGames != null) {
-                        onGetGames.error(error.toString());
+                    error.printStackTrace();
+                    if (this.onError != null) {
+                        this.onError.error(error.toString(), tag);
                     }
                 }, gamesOptions);
     }
 
     // Get genres from IGDB api. Calls given OnGetGenres interface once finished. Calls error if one occurred during search.
     // onGetGenres: OnGetGenres interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGenres interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
-    public void getGenres(@Nullable OnGetGenres onGetGenres, String... options) {
+    public void getGenres(@Nullable OnGetGenres onGetGenres, @Nullable String tag, String... options) {
         String[] gamesOptions = Stream.of(options, new String[] {
                 "fields *"
         }).flatMap(Stream::of).toArray(String[]::new);
@@ -100,23 +124,28 @@ public class IGDBDataFetcher {
                     if (onGetGenres != null) {
                         try {
                             JSONArray jsonArr = new JSONArray(response);
-                            onGetGenres.genres(IGDBGenre.getGenres(jsonArr));
+                            onGetGenres.genres(IGDBGenre.getGenres(jsonArr), tag);
                         } catch (Exception e) {
-                            onGetGenres.error(e.toString());
+                            e.printStackTrace();
+                            if (this.onError != null) {
+                                this.onError.error(e.toString(), tag);
+                            }
                         }
                     }
                 } ,
                 error -> {
-                    if (onGetGenres != null) {
-                        onGetGenres.error(error.toString());
+                    error.printStackTrace();
+                    if (this.onError != null) {
+                        this.onError.error(error.toString(), tag);
                     }
                 }, gamesOptions);
     }
 
     // Get GameModes from IGDB api. Calls given OnGetGameModes interface once finished. Calls error if one occurred during search.
     // onGetGameModes: OnGetGameModes interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGameModes interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
-    public void getGameModes(@Nullable OnGetGameModes onGetGameModes, String... options) {
+    public void getGameModes(@Nullable OnGetGameModes onGetGameModes, @Nullable String tag, String... options) {
         String[] gamesOptions = Stream.of(options, new String[] {
                 "fields *"
         }).flatMap(Stream::of).toArray(String[]::new);
@@ -125,23 +154,28 @@ public class IGDBDataFetcher {
                     if (onGetGameModes != null) {
                         try {
                             JSONArray jsonArr = new JSONArray(response);
-                            onGetGameModes.gameModes(IGDBGameMode.getGameModes(jsonArr));
+                            onGetGameModes.gameModes(IGDBGameMode.getGameModes(jsonArr), tag);
                         } catch (Exception e) {
-                            onGetGameModes.error(e.toString());
+                            e.printStackTrace();
+                            if (this.onError != null) {
+                                this.onError.error(e.toString(), tag);
+                            }
                         }
                     }
                 } ,
                 error -> {
-                    if (onGetGameModes != null) {
-                        onGetGameModes.error(error.toString());
+                    error.printStackTrace();
+                    if (this.onError != null) {
+                        this.onError.error(error.toString(), tag);
                     }
                 }, gamesOptions);
     }
 
     // Get Platforms from IGDB api. Calls given OnGetPlatforms interface once finished. Calls error if one occurred during search.
     // onGetPlatforms: OnGetPlatforms interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetPlatforms interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
-    public void getPlatforms(@Nullable OnGetPlatforms onGetPlatforms, String... options) {
+    public void getPlatforms(@Nullable OnGetPlatforms onGetPlatforms, @Nullable String tag, String... options) {
         String[] gamesOptions = Stream.of(options, new String[] {
                 "fields *"
         }).flatMap(Stream::of).toArray(String[]::new);
@@ -150,28 +184,63 @@ public class IGDBDataFetcher {
                     if (onGetPlatforms != null) {
                         try {
                             JSONArray jsonArr = new JSONArray(response);
-                            onGetPlatforms.platforms(IGDBPlatform.getPlatforms(jsonArr));
+                            onGetPlatforms.platforms(IGDBPlatform.getPlatforms(jsonArr), tag);
                         } catch (Exception e) {
-                            onGetPlatforms.error(e.toString());
+                            e.printStackTrace();
+                            if (this.onError != null) {
+                                this.onError.error(e.toString(), tag);
+                            }
                         }
                     }
                 } ,
                 error -> {
-                    if (onGetPlatforms != null) {
-                        onGetPlatforms.error(error.toString());
+                    error.printStackTrace();
+                    if (this.onError != null) {
+                        this.onError.error(error.toString(), tag);
                     }
                 }, gamesOptions);
     }
 
+    // Get Release dates from IGDB api. Calls given OnGetReleaseDates interface once finished. Calls error if one occurred during search.
+    // onGetReleaseDates: OnGetReleaseDates interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetReleaseDates interface and you want to return the data to correct object
+    // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
+    public void getReleaseDates(@Nullable OnGetReleaseDates onGetReleaseDates, @Nullable String tag, String... options) {
+        String[] gamesOptions = Stream.of(options, new String[] {
+                "fields *"
+        }).flatMap(Stream::of).toArray(String[]::new);
+        this.apiPost(IGDBDataFetcher.RELEASEDATES_POSTFIX,
+                response -> {
+                    if (onGetReleaseDates != null) {
+                        try {
+                            JSONArray jsonArr = new JSONArray(response);
+                            onGetReleaseDates.releaseDates(IGDBReleaseDate.getReleaseDates(jsonArr), tag);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (this.onError != null) {
+                                this.onError.error(e.toString(), tag);
+                            }
+                        }
+                    }
+                } ,
+                error -> {
+                    error.printStackTrace();
+                    if (this.onError != null) {
+                        this.onError.error(error.toString(), tag);
+                    }
+                }, gamesOptions);
+    }
+
+
     /* Private methods */
 
-    private void apiPost(String endpoint, Response.Listener<String> onReponse, Response.ErrorListener onError, String... options) {
+    private void apiPost(String endpoint, Response.Listener<String> onResponse, Response.ErrorListener onError, String... options) {
         String body = "";
         for (String option : options) {
             body += option + ";";
         }
         final String finalBody = body;
-        StringRequest getRequest = new StringRequest(Request.Method.POST, IGDBDataFetcher.API_URL + endpoint, onReponse, onError
+        StringRequest request = new StringRequest(Request.Method.POST, IGDBDataFetcher.API_URL + endpoint, onResponse, onError
         ) {
             @Override
             public String getBodyContentType() {
@@ -195,7 +264,7 @@ public class IGDBDataFetcher {
                 }
             }
         };
-        queue.add(getRequest);
+        queue.add(request);
     }
 }
 

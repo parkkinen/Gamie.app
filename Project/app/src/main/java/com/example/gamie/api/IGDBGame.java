@@ -22,7 +22,7 @@ public class IGDBGame {
     public List<Integer> similiarGames = null;
     public Double rating = null;
     public Double popularity = null;
-    public String coverArt = null;
+    public IGDBScreenshot coverArt = null;
 
     IGDBGame(JSONObject json) {
         try {
@@ -65,7 +65,7 @@ public class IGDBGame {
 
             if (json.has("cover")) {
                 JSONObject coverJson = json.getJSONObject("cover");
-                this.coverArt = coverJson.getString("url").substring(2);
+                this.coverArt = new IGDBScreenshot(coverJson);
             }
 
             if (json.has("similiar_games")) {
