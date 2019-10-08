@@ -81,7 +81,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
     public void leftSwipe() {
         if (page < MAX_PAGE) {
             page += 1;
-            api.getGames(this, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+            api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
             pageText.setText(String.format("Page %d", page + 1));
         } else {
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {
@@ -97,7 +97,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
     public void rightSwipe() {
         if (page > 0) {
             page -= 1;
-            api.getGames(this, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+            api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
             pageText.setText(String.format("Page %d", page + 1));
         } else {
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {

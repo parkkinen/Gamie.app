@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         newReleasesIV = findViewById(R.id.newReleases_iv);
         recommendedIV = findViewById(R.id.recommended_iv);
 
-        // Get upcoming games ids
         api.getReleaseDates(this, UPCOMING_TAG, String.format("where date > %d; sort date asc", System.currentTimeMillis()));
         api.getReleaseDates(this, NEW_TAG, String.format("where date < %d; sort date desc", System.currentTimeMillis()));
     }
