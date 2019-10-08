@@ -31,6 +31,8 @@ public class IGDBDataFetcher {
     public static final String GENRES_POSTFIX = "genres";
     public static final String GAMEMODES_POSTFIX = "game_modes";
     public static final String PLATFORMS_POSTFIX = "platforms";
+    public static final int MAX_OFFSET = 150;
+    public static final int MAX_LIMIT = 50;
 
     /* Public Interfaces */
 
@@ -162,6 +164,7 @@ public class IGDBDataFetcher {
                     }
                 }, gamesOptions);
     }
+
 
     /* Private methods */
 
