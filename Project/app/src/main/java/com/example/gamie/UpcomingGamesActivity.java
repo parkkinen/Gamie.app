@@ -21,13 +21,15 @@ import com.example.gamie.adapters.GamesGridAdapter;
 import com.example.gamie.adapters.GamesGridGestureListener;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
+import com.example.gamie.api.IGDBPlatform;
+import com.example.gamie.api.IGDBReleaseDate;
 import com.example.gamie.api.IGDBScreenshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpcomingGamesActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, GamesGridGestureListener.OnGesture {
+public class UpcomingGamesActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates, GamesGridGestureListener.OnGesture {
     private static final int GAMES_PER_PAGE = 6;
     private static final int MAX_PAGE = 15;
     private int page;
@@ -61,13 +63,18 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
                 return false;
             }
         });
-        api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+        api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, IGDBPlatform.PlatformType.XBOX);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         detector.onTouchEvent(event);
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void releaseDates(List<IGDBReleaseDate> releaseDates, String tag) {
+
     }
 
     @Override
@@ -81,7 +88,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
     public void leftSwipe() {
         if (page < MAX_PAGE) {
             page += 1;
-            api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+            api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, IGDBPlatform.PlatformType.XBOX);
             pageText.setText(String.format("Page %d", page + 1));
         } else {
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {
@@ -97,7 +104,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
     public void rightSwipe() {
         if (page > 0) {
             page -= 1;
-            api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+            api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, IGDBPlatform.PlatformType.XBOX);
             pageText.setText(String.format("Page %d", page + 1));
         } else {
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {

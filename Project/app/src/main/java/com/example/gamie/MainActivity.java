@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
+import com.example.gamie.api.IGDBPlatform;
 import com.example.gamie.api.IGDBReleaseDate;
 
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         newReleasesIV = findViewById(R.id.newReleases_iv);
         recommendedIV = findViewById(R.id.recommended_iv);
 
-        api.getReleaseDates(this, UPCOMING_TAG, String.format("where date > %d; sort date asc", System.currentTimeMillis()));
-        api.getReleaseDates(this, NEW_TAG, String.format("where date < %d; sort date desc", System.currentTimeMillis()));
+        api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
+        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
     }
 
     @Override
