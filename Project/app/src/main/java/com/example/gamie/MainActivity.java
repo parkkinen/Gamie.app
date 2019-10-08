@@ -20,4 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         startActivity(new Intent(this, UpcomingGamesActivity.class));
     }
+
+    // 1. get id list of upcoming games
+    // 2. get games based on the upcoming games list
 }
