@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,10 +88,10 @@ public class IGDBDataFetcher {
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
     public void getGames(@Nullable OnGetGames onGetGames, @Nullable String tag, String... options) {
-        String[] gamesOptions = Stream.of(options, new String[] {
+        String[] gamesOptions = this.combineOptions(new String[]{
                 "fields *, game_modes.name, genres.name, screenshots.url, platforms.name, cover.url",
                 "exclude aggregated_rating,aggregated_rating_count, updated_at, external_games"
-        }).flatMap(Stream::of).toArray(String[]::new);
+        }, options);
         this.apiPost(IGDBDataFetcher.GAMES_POSTFIX,
                 response -> {
                     if (onGetGames != null) {
@@ -118,9 +119,7 @@ public class IGDBDataFetcher {
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGenres interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
     public void getGenres(@Nullable OnGetGenres onGetGenres, @Nullable String tag, String... options) {
-        String[] gamesOptions = Stream.of(options, new String[] {
-                "fields *"
-        }).flatMap(Stream::of).toArray(String[]::new);
+        String[] genreOptions = this.combineOptions(new String[]{"fields *"}, options);
         this.apiPost(IGDBDataFetcher.GENRES_POSTFIX,
                 response -> {
                     if (onGetGenres != null) {
@@ -140,7 +139,7 @@ public class IGDBDataFetcher {
                     if (this.onError != null) {
                         this.onError.error(error.toString(), tag);
                     }
-                }, gamesOptions);
+                }, genreOptions);
     }
 
     // Get GameModes from IGDB api. Calls given OnGetGameModes interface once finished. Calls error if one occurred during search.
@@ -178,9 +177,7 @@ public class IGDBDataFetcher {
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetPlatforms interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
     public void getPlatforms(@Nullable OnGetPlatforms onGetPlatforms, @Nullable String tag, String... options) {
-        String[] gamesOptions = Stream.of(options, new String[] {
-                "fields *"
-        }).flatMap(Stream::of).toArray(String[]::new);
+        String[] platformOptions = this.combineOptions(new String[]{"fields *"}, options);
         this.apiPost(IGDBDataFetcher.PLATFORMS_POSTFIX,
                 response -> {
                     if (onGetPlatforms != null) {
@@ -200,7 +197,7 @@ public class IGDBDataFetcher {
                     if (this.onError != null) {
                         this.onError.error(error.toString(), tag);
                     }
-                }, gamesOptions);
+                }, platformOptions);
     }
 
     // Get Release dates from IGDB api. Calls given OnGetReleaseDates interface once finished. Calls error if one occurred during search.
@@ -208,9 +205,7 @@ public class IGDBDataFetcher {
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetReleaseDates interface and you want to return the data to correct object
     // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
     public void getReleaseDates(@Nullable OnGetReleaseDates onGetReleaseDates, @Nullable String tag, String... options) {
-        String[] gamesOptions = Stream.of(options, new String[] {
-                "fields *"
-        }).flatMap(Stream::of).toArray(String[]::new);
+        String[] rdOptions = this.combineOptions(new String[]{"fields *"}, options);
         this.apiPost(IGDBDataFetcher.RELEASEDATES_POSTFIX,
                 response -> {
                     if (onGetReleaseDates != null) {
@@ -230,7 +225,59 @@ public class IGDBDataFetcher {
                     if (this.onError != null) {
                         this.onError.error(error.toString(), tag);
                     }
-                }, gamesOptions);
+                }, rdOptions);
+    }
+
+    // Gets upcoming games from IGDB api by first performing query to search game ids that are upcoming. Then the ids are concatenated into an games query.
+    // onGetGames: OnGetGames interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
+    // limit: amount of upcoming games to fetch
+    // offset: how much to offset the query from newest to oldest
+    public void getUpcomingGames(@Nullable OnGetGames onGetGames, @Nullable String tag, int limit, int offset, IGDBPlatform.PlatformType platformType) {
+        IGDBDataFetcher fetcher = this;
+        this.getReleaseDates(new OnGetReleaseDates() {
+            @Override
+            public void releaseDates(List<IGDBReleaseDate> releaseDates, String tag) {
+                String whereGameIdOption = "where id = (";
+
+                for (IGDBReleaseDate releaseDate : releaseDates) {
+                    if (releaseDate.gameId != null) {
+                        whereGameIdOption += releaseDate.gameId;
+                        if (releaseDates.indexOf(releaseDate) != releaseDates.size() - 1) {
+                            whereGameIdOption += ",";
+                        }
+                    }
+                }
+                whereGameIdOption += ")";
+                fetcher.getGames(onGetGames, tag, whereGameIdOption);
+            }
+        }, tag, String.format("where date > %d & platform = %d; sort date desc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+    }
+
+    // Gets games that have their release date set close to present from IGDB api by first performing query to search game ids that are upcoming. Then the ids are concatenated into an games query.
+    // onGetGames: OnGetGames interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
+    // limit: amount of upcoming games to fetch
+    // offset: how much to offset the query from newest to oldest
+    public void getNewGames(@Nullable OnGetGames onGetGames, @Nullable String tag, int limit, int offset, IGDBPlatform.PlatformType platformType) {
+        IGDBDataFetcher fetcher = this;
+        this.getReleaseDates(new OnGetReleaseDates() {
+            @Override
+            public void releaseDates(List<IGDBReleaseDate> releaseDates, String tag) {
+                String whereGameIdOption = "where id = (";
+
+                for (IGDBReleaseDate releaseDate : releaseDates) {
+                    if (releaseDate.gameId != null) {
+                        whereGameIdOption += releaseDate.gameId;
+                        if (releaseDates.indexOf(releaseDate) != releaseDates.size() - 1) {
+                            whereGameIdOption += ",";
+                        }
+                    }
+                }
+                whereGameIdOption += ")";
+                fetcher.getGames(onGetGames, tag, whereGameIdOption);
+            }
+        }, tag, String.format("where date < %d & platform = &d; sort date asc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
     }
 
     /* Private methods */
@@ -266,6 +313,10 @@ public class IGDBDataFetcher {
             }
         };
         queue.add(request);
+    }
+
+    private String[] combineOptions(String[] options, String... optionals) {
+        return Stream.of(optionals, options).flatMap(Stream::of).toArray(String[]::new);
     }
 }
 
