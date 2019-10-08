@@ -32,6 +32,8 @@ public class IGDBDataFetcher {
     public static final String GAMEMODES_POSTFIX = "game_modes";
     public static final String PLATFORMS_POSTFIX = "platforms";
     public static final String RELEASEDATES_POSTFIX = "release_dates";
+    public static final int MAX_OFFSET = 150;
+    public static final int MAX_LIMIT = 50;
 
     public IGDBDataFetcher(Context context) {
         this.queue = Volley.newRequestQueue(context);
@@ -200,37 +202,6 @@ public class IGDBDataFetcher {
                     }
                 }, gamesOptions);
     }
-
-    // Get Release dates from IGDB api. Calls given OnGetReleaseDates interface once finished. Calls error if one occurred during search.
-    // onGetReleaseDates: OnGetReleaseDates interface defines what will be done with the result
-    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetReleaseDates interface and you want to return the data to correct object
-    // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
-    public void getReleaseDates(@Nullable OnGetReleaseDates onGetReleaseDates, @Nullable String tag, String... options) {
-        String[] gamesOptions = Stream.of(options, new String[] {
-                "fields *"
-        }).flatMap(Stream::of).toArray(String[]::new);
-        this.apiPost(IGDBDataFetcher.RELEASEDATES_POSTFIX,
-                response -> {
-                    if (onGetReleaseDates != null) {
-                        try {
-                            JSONArray jsonArr = new JSONArray(response);
-                            onGetReleaseDates.releaseDates(IGDBReleaseDate.getReleaseDates(jsonArr), tag);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
-                            }
-                        }
-                    }
-                } ,
-                error -> {
-                    error.printStackTrace();
-                    if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
-                    }
-                }, gamesOptions);
-    }
-
 
     /* Private methods */
 
