@@ -31,6 +31,7 @@ public class IGDBDataFetcher {
     public static final String GENRES_POSTFIX = "genres";
     public static final String GAMEMODES_POSTFIX = "game_modes";
     public static final String PLATFORMS_POSTFIX = "platforms";
+    public static final String RELEASEDATES_POSTFIX = "release_dates";
 
     /* Public Interfaces */
 
@@ -51,6 +52,11 @@ public class IGDBDataFetcher {
 
     public interface OnGetPlatforms {
         void platforms(List<IGDBPlatform> platforms);
+        void error(String e);
+    }
+
+    public interface OnGetReleaseDates {
+        void releaseDates(List<IGDBReleaseDate> releaseDates);
         void error(String e);
     }
 
@@ -163,15 +169,41 @@ public class IGDBDataFetcher {
                 }, gamesOptions);
     }
 
+    // Get Release dates from IGDB api. Calls given OnGetReleaseDates interface once finished. Calls error if one occurred during search.
+    // onGetReleaseDates: OnGetReleaseDates interface defines what will be done with the result
+    // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
+    public void getReleaseDates(@Nullable OnGetReleaseDates onGetReleaseDates, String... options) {
+        String[] gamesOptions = Stream.of(options, new String[] {
+                "fields *"
+        }).flatMap(Stream::of).toArray(String[]::new);
+        this.apiPost(IGDBDataFetcher.RELEASEDATES_POSTFIX,
+                response -> {
+                    if (onGetReleaseDates != null) {
+                        try {
+                            JSONArray jsonArr = new JSONArray(response);
+                            onGetReleaseDates.releaseDates(IGDBReleaseDate.getReleaseDates(jsonArr));
+                        } catch (Exception e) {
+                            onGetReleaseDates.error(e.toString());
+                        }
+                    }
+                } ,
+                error -> {
+                    if (onGetReleaseDates != null) {
+                        onGetReleaseDates.error(error.toString());
+                    }
+                }, gamesOptions);
+    }
+
+
     /* Private methods */
 
-    private void apiPost(String endpoint, Response.Listener<String> onReponse, Response.ErrorListener onError, String... options) {
+    private void apiPost(String endpoint, Response.Listener<String> onResponse, Response.ErrorListener onError, String... options) {
         String body = "";
         for (String option : options) {
             body += option + ";";
         }
         final String finalBody = body;
-        StringRequest getRequest = new StringRequest(Request.Method.POST, IGDBDataFetcher.API_URL + endpoint, onReponse, onError
+        StringRequest getRequest = new StringRequest(Request.Method.POST, IGDBDataFetcher.API_URL + endpoint, onResponse, onError
         ) {
             @Override
             public String getBodyContentType() {
