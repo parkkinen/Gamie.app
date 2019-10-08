@@ -61,7 +61,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
                 return false;
             }
         });
-        api.getGames(this, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+        api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
     }
 
     @Override
@@ -71,22 +71,17 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
     }
 
     @Override
-    public void games(List<IGDBGame> games) {
+    public void games(List<IGDBGame> games, String tag) {
         this.games.clear();
         this.games.addAll(games);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void error(String e) {
-        Log.d("gamie", "Error occurred while getting games: " + e);
-    }
-
-    @Override
     public void leftSwipe() {
         if (page < MAX_PAGE) {
             page += 1;
-            api.getGames(this, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+            api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
             pageText.setText(String.format("Page %d", page + 1));
         } else {
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {
@@ -102,7 +97,7 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
     public void rightSwipe() {
         if (page > 0) {
             page -= 1;
-            api.getGames(this, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
+            api.getGames(this, null, String.format("offset %d; limit %d", page * 10, GAMES_PER_PAGE));
             pageText.setText(String.format("Page %d", page + 1));
         } else {
             UpcomingGamesActivity.this.runOnUiThread(new Runnable() {
