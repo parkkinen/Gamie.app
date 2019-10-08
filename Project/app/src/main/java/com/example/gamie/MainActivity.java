@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.gamie.api.IGDBDataFetcher;
@@ -16,6 +17,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates {
     private IGDBDataFetcher api;
+    private final String UPCOMING_TAG = "upcoming";
+    private final String NEW_TAG = "new";
+    private final String RECOMMENDED_TAG = "recommended";
 
     private List<IGDBGame> upcomingGames = new ArrayList<>();
     private List<IGDBGame> newGames = new ArrayList<>();
@@ -24,10 +28,6 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     private ImageView upcomingGamesIV;
     private ImageView newReleasesIV;
     private ImageView recommendedIV;
-
-
-    // 1.get id list of upcoming games
-    // 2. get games base on the upcoming games list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +39,23 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         recommendedIV = findViewById(R.id.recommended_iv);
 
         // Get upcoming games ids
-        api.getReleaseDates(this, String.format("where date > %l; sort date asc", System.currentTimeMillis()));
+        api.getReleaseDates(this, UPCOMING_TAG, String.format("where date > %d; sort date asc", System.currentTimeMillis()));
+        api.getReleaseDates(this, NEW_TAG, String.format("where date < %d; sort date desc", System.currentTimeMillis()));
     }
 
     @Override
-    public void games(List<IGDBGame> games) {
-
+    public void games(List<IGDBGame> games, String tag) {
+        if (tag.equals(UPCOMING_TAG)) {
+            this.upcomingGames = games;
+        } else if (tag.equals(NEW_TAG)) {
+            this.newGames = games;
+        } else if (tag.equals(RECOMMENDED_TAG)) {
+            this.recommendedGames = games;
+        }
     }
 
     @Override
-    public void releaseDates(List<IGDBReleaseDate> releaseDates) {
+    public void releaseDates(List<IGDBReleaseDate> releaseDates, String tag) {
         String whereGameIdOption = "where id = (";
 
         for (IGDBReleaseDate releaseDate : releaseDates) {
@@ -59,11 +66,6 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         }
         whereGameIdOption += ")";
 
-        api.getGames(MainActivity.this, whereGameIdOption);
-    }
-
-    @Override
-    public void error(String e) {
-
+        api.getGames(MainActivity.this, tag, whereGameIdOption);
     }
 }

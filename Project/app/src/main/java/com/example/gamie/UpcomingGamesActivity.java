@@ -32,11 +32,11 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
         api = new IGDBDataFetcher(this);
         upcomingGamesGrid = findViewById(R.id.upcomingGamesGrid);
 
-        api.getGames(this, String.format("offset %d; limit %d", gameOffset, GAMES_PER_PAGE));
+        api.getGames(this, null, String.format("offset %d; limit %d", gameOffset, GAMES_PER_PAGE));
     }
 
     @Override
-    public void games(List<IGDBGame> games) {
+    public void games(List<IGDBGame> games, String tag) {
         upcomingGamesGrid.removeAllViews();
         upcomingGamesGrid.setColumnCount(COLUMN_COUNT);
         upcomingGamesGrid.setRowCount(games.size() / COLUMN_COUNT);
@@ -57,10 +57,5 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
             GridLayout.LayoutParams gridParam = new GridLayout.LayoutParams(rowSpan, colSpan);
             upcomingGamesGrid.addView(cardView, gridParam);
         }
-    }
-
-    @Override
-    public void error(String e) {
-        Log.d("gamie", "Error occurred during fetch: " + e);
     }
 }

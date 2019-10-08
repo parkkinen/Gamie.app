@@ -7,14 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IGDBReleaseDate {
-    public Integer id;
-    public Long date;
-    public Integer gameId;
+    public Integer id = null;
+    public Long date = null;
+    public Integer gameId = null;
 
     IGDBReleaseDate(JSONObject json) {
         try {
             this.id = json.getInt("id");
-            this.date = json.getLong("date");
+            if (json.has("date")) {
+                this.date = json.getLong("date");
+            }
             this.gameId = json.getInt("game");
         }
         catch (Exception e) {
