@@ -44,8 +44,7 @@ public class IGDBScreenshot {
 
     public String getImageUrl(IGDBScreenshotSize size) {
         String url = this.url.substring(2);
-        url.replace(IGDBScreenshotSize.THUMB.getSize(), size.getSize());
-        return String.format("https://%s", url);
+        return  String.format("https://%s", url.replace(IGDBScreenshotSize.THUMB.getSize(), size.getSize()));
     }
 
     static List<IGDBScreenshot> getScreenshots(JSONArray json) {

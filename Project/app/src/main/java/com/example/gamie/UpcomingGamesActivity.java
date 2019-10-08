@@ -43,12 +43,12 @@ public class UpcomingGamesActivity extends AppCompatActivity implements IGDBData
         for (IGDBGame game : games) {
             ImageView gridImage = new ImageView(this);
             if (game.coverArt != null) {
-                Picasso.with(this).load(game.coverArt.getImageUrl(IGDBScreenshot.IGDBScreenshotSize.FHD)).into(gridImage);
+                Picasso.with(this).load(game.coverArt.getImageUrl(IGDBScreenshot.IGDBScreenshotSize.SCREENSHOT_HUGE)).into(gridImage);
             } else {
                 gridImage.setImageResource(R.drawable.placeholder_image);
             }
             gridImage.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
-            gridImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            gridImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             CardView cardView = new CardView(this);
             cardView.setRadius(10);
             cardView.addView(gridImage);
