@@ -59,12 +59,14 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         String whereGameIdOption = "where id = (";
 
         for (IGDBReleaseDate releaseDate : releaseDates) {
-            whereGameIdOption += releaseDate.gameId;
-            if (releaseDates.indexOf(releaseDate) != releaseDates.size() - 1) {
-                whereGameIdOption += ",";
+            if (releaseDate.gameId != null) {
+                whereGameIdOption += releaseDate.gameId;
+                if (releaseDates.indexOf(releaseDate) != releaseDates.size() - 1) {
+                    whereGameIdOption += ",";
+                }
             }
         }
-        whereGameIdOption += ")";
+        whereGameIdOption += "); limit 8";
 
         api.getGames(MainActivity.this, tag, whereGameIdOption);
     }
