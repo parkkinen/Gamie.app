@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.example.gamie.api.IGDBDataFetcher;
@@ -34,6 +35,18 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.up).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, UpcomingGamesActivity.class));
+            }
+        });
+        findViewById(R.id.newButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, NewGamesActivity.class));
+            }
+        });
         api = new IGDBDataFetcher(this);
         upcomingGamesIV = findViewById(R.id.upcomingGames_iv);
         newReleasesIV = findViewById(R.id.newReleases_iv);
