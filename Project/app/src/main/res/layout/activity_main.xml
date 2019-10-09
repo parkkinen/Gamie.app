@@ -26,7 +26,6 @@
     </TextView>
 
     <androidx.cardview.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/upcomingGames_cv"
         android:layout_width="0dp"
         android:layout_height="200dp"
@@ -36,8 +35,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/upcomingGames_tv"
-        card_view:cardElevation="@dimen/elevationMargin"
-        card_view:cardCornerRadius="4dp">
+        app:cardElevation="@dimen/elevationMargin"
+        app:cardCornerRadius="4dp">
 
         <ImageView
             android:id="@+id/upcomingGames_iv"

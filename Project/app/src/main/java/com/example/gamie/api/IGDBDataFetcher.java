@@ -70,7 +70,7 @@ public class IGDBDataFetcher {
     }
 
     public interface OnError {
-        void error(String error, String tag);
+        void error(Exception e, String tag);
     }
 
     private OnError onError;
@@ -101,7 +101,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -109,7 +109,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, gamesOptions);
     }
@@ -129,7 +129,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -137,7 +137,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, genreOptions);
     }
@@ -159,7 +159,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -167,7 +167,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, gamesOptions);
     }
@@ -187,7 +187,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -195,7 +195,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, platformOptions);
     }
@@ -215,7 +215,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -223,11 +223,12 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, rdOptions);
     }
 
+    // TODO: Games could have been fetched straight from first query using fields game.* and etc. Update later.
     // Gets upcoming games from IGDB api by first performing query to search game ids that are upcoming. Then the ids are concatenated into an games query.
     // onGetGames: OnGetGames interface defines what will be done with the result
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
@@ -251,9 +252,10 @@ public class IGDBDataFetcher {
                 whereGameIdOption += ")";
                 fetcher.getGames(onGetGames, tag, whereGameIdOption);
             }
-        }, tag, String.format("where date > %d & platform = %d; sort date desc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+        }, tag, String.format("where date > %d & game.platforms = %d; sort date desc", System.currentTimeMillis() / 1000, platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
     }
 
+    // TODO: Games could have been fetched straight from first query using fields game.* and etc. Update later.
     // Gets games that have their release date set close to present from IGDB api by first performing query to search game ids that are upcoming. Then the ids are concatenated into an games query.
     // onGetGames: OnGetGames interface defines what will be done with the result
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
@@ -277,7 +279,7 @@ public class IGDBDataFetcher {
                 whereGameIdOption += ")";
                 fetcher.getGames(onGetGames, tag, whereGameIdOption);
             }
-        }, tag, String.format("where date < %d & platform = &d; sort date asc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+        }, tag, String.format("where date < %d & game.platforms = %d; sort date desc", System.currentTimeMillis() / 1000, platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
     }
 
     /* Private methods */
