@@ -38,4 +38,9 @@ public class UpcomingGamesActivity extends GridGamesActivity implements IGDBData
     public void afterPlatformChange(IGDBPlatform.PlatformType platformType) {
         this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
+
+    @Override
+    public void afterApiError() {
+        this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+    }
 }

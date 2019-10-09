@@ -41,8 +41,6 @@ public class NewGamesActivity extends GridGamesActivity implements IGDBDataFetch
 
     @Override
     public void afterApiError() {
-        this.page = lastPage;
-        this.platform = lastPlatform;
         this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 }

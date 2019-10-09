@@ -39,6 +39,7 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     protected TextView pageTitle;
     protected TextView pageText;
     protected Spinner spinner;
+    protected List<String> spinnerItems = new ArrayList<>();
 
     protected IGDBDataFetcher api;
 
@@ -51,7 +52,6 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
         pageTitle = findViewById(R.id.gridGamesTitle);
         spinner = findViewById(R.id.gridGamesSpinner);
 
-        List<String> spinnerItems = new ArrayList<>();
         for (IGDBPlatform.PlatformType type : IGDBPlatform.PlatformType.values()) {
             spinnerItems.add(type.toString());
         }
@@ -82,6 +82,11 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
             @Override
             public void error(Exception e, String tag) {
                 Toast.makeText(getBaseContext(), String.format("An error occurred during an API call: %s", e.toString()), Toast.LENGTH_LONG).show();
+
+                page = lastPage;
+                platform = lastPlatform;
+                pageText.setText(String.format("Page %d", page + 1));
+                spinner.setSelection(spinnerItems.indexOf(lastPlatform.toString()));
                 afterApiError();
             }
         });
@@ -107,6 +112,7 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     public void leftSwipe() {
         if (page < MAX_PAGE) {
             lastPage = page;
+            lastPlatform = platform;
             page += 1;
             this.afterLeftSwipe();
             pageText.setText(String.format("Page %d", page + 1));
@@ -127,6 +133,7 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     public void rightSwipe() {
         if (page > 0) {
             lastPage = page;
+            lastPlatform = platform;
             page -= 1;
             this.afterRightSwipe();
             pageText.setText(String.format("Page %d", page + 1));
