@@ -26,18 +26,11 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     private List<IGDBGame> newGames = new ArrayList<>();
     private List<IGDBGame> recommendedGames = new ArrayList<>();
 
-    private ImageView upcomingGamesIV;
-    private ImageView newReleasesIV;
-    private ImageView recommendedIV;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         api = new IGDBDataFetcher(this);
-        upcomingGamesIV = findViewById(R.id.upcomingGames_iv);
-        newReleasesIV = findViewById(R.id.newReleases_iv);
-        recommendedIV = findViewById(R.id.recommended_iv);
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
         api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
