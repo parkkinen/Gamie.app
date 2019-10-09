@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.example.gamie.activities.MenuActivity;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBPlatform;
@@ -14,7 +15,7 @@ import com.example.gamie.api.IGDBReleaseDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames {
+public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetGames {
     private IGDBDataFetcher api;
     private final String UPCOMING_TAG = "upcoming";
     private final String NEW_TAG = "new";

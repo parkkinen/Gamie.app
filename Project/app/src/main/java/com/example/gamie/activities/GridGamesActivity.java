@@ -5,6 +5,7 @@ import androidx.core.view.GestureDetectorCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +26,7 @@ import com.example.gamie.api.IGDBPlatform;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridGamesActivity extends AppCompatActivity implements GamesGridGestureListener.OnGesture {
+public class GridGamesActivity extends MenuActivity implements GamesGridGestureListener.OnGesture, AdapterView.OnItemClickListener {
     protected static final int GAMES_PER_PAGE = 6;
     protected static final int MAX_PAGE = 150 / GAMES_PER_PAGE;
     protected int lastPage = 0;
@@ -50,6 +51,7 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_games);
+
         pageText = findViewById(R.id.gridGamesPage);
         pageTitle = findViewById(R.id.gridGamesTitle);
         spinner = findViewById(R.id.gridGamesSpinner);
@@ -102,15 +104,7 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
                 return false;
             }
         });
-        gamesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                IGDBGame game = games.get(i);
-                Intent singleGameIntent = new Intent(GridGamesActivity.this, SingleGameActivity.class);
-                singleGameIntent.putExtra(SingleGameActivity.SINGLE_GAME_EXTRA, game);
-                startActivity(singleGameIntent);
-            }
-        });
+        gamesGrid.setOnItemClickListener(this);
     }
 
     @Override
@@ -173,4 +167,13 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
 
     @Override
     public void bottomSwipe() {}
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        IGDBGame game = games.get(i);
+        Intent singleGameIntent = new Intent(GridGamesActivity.this, SingleGameActivity.class);
+        singleGameIntent.putExtra(SingleGameActivity.SINGLE_GAME_EXTRA, game);
+        singleGameIntent.putExtra(SingleGameActivity.PARENT_CLASS_EXTRA, this.getClass().getName());
+        startActivity(singleGameIntent);
+    }
 }
