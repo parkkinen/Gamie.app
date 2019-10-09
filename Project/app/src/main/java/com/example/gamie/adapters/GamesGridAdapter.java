@@ -63,6 +63,4 @@ public class GamesGridAdapter extends BaseAdapter {
 
         return view;
     }
-
-
 }

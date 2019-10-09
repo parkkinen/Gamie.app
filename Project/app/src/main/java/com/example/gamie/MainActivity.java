@@ -3,10 +3,7 @@ package com.example.gamie;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.example.gamie.api.IGDBDataFetcher;
@@ -17,7 +14,7 @@ import com.example.gamie.api.IGDBReleaseDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates {
+public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames {
     private IGDBDataFetcher api;
     private final String UPCOMING_TAG = "upcoming";
     private final String NEW_TAG = "new";
@@ -35,13 +32,15 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startActivity(new Intent(this, UpcomingGamesActivity.class));
+        /*
         api = new IGDBDataFetcher(this);
         upcomingGamesIV = findViewById(R.id.upcomingGames_iv);
         newReleasesIV = findViewById(R.id.newReleases_iv);
         recommendedIV = findViewById(R.id.recommended_iv);
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
-        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
+        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);*/
     }
 
     @Override
@@ -53,22 +52,5 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         } else if (tag.equals(RECOMMENDED_TAG)) {
             this.recommendedGames = games;
         }
-    }
-
-    @Override
-    public void releaseDates(List<IGDBReleaseDate> releaseDates, String tag) {
-        String whereGameIdOption = "where id = (";
-
-        for (IGDBReleaseDate releaseDate : releaseDates) {
-            if (releaseDate.gameId != null) {
-                whereGameIdOption += releaseDate.gameId;
-                if (releaseDates.indexOf(releaseDate) != releaseDates.size() - 1) {
-                    whereGameIdOption += ",";
-                }
-            }
-        }
-        whereGameIdOption += "); limit 8";
-
-        api.getGames(MainActivity.this, tag, whereGameIdOption);
     }
 }

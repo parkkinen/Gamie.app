@@ -1,7 +1,5 @@
 package com.example.gamie;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 import com.example.gamie.activities.GridGamesActivity;
@@ -16,7 +14,7 @@ public class NewGamesActivity extends GridGamesActivity implements IGDBDataFetch
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.pageTitle.setText("New Games");
-        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, IGDBPlatform.PlatformType.PC);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 
     @Override
@@ -28,10 +26,21 @@ public class NewGamesActivity extends GridGamesActivity implements IGDBDataFetch
 
     @Override
     public void afterLeftSwipe() {
-        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, IGDBPlatform.PlatformType.PC);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 
+    @Override
     public void afterRightSwipe() {
-        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, IGDBPlatform.PlatformType.PC);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+    }
+
+    @Override
+    public void afterPlatformChange(IGDBPlatform.PlatformType platformType) {
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platformType);
+    }
+
+    @Override
+    public void afterApiError() {
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 }

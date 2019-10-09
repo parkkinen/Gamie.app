@@ -6,16 +6,19 @@ import androidx.core.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamie.R;
-import com.example.gamie.UpcomingGamesActivity;
 import com.example.gamie.adapters.GamesGridAdapter;
 import com.example.gamie.adapters.GamesGridGestureListener;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
+import com.example.gamie.api.IGDBPlatform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +26,11 @@ import java.util.List;
 public class GridGamesActivity extends AppCompatActivity implements GamesGridGestureListener.OnGesture {
     protected static final int GAMES_PER_PAGE = 6;
     protected static final int MAX_PAGE = 150 / GAMES_PER_PAGE;
-    protected int page;
+    protected int lastPage = 0;
+    protected int page = 0;
+
+    protected IGDBPlatform.PlatformType lastPlatform;
+    protected IGDBPlatform.PlatformType platform;
 
     protected GridView gamesGrid;
     protected GamesGridAdapter gamesGridAdapter;
@@ -31,7 +38,8 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     protected GestureDetectorCompat gridGestureDetector;
     protected TextView pageTitle;
     protected TextView pageText;
-    protected TextView pageContent;
+    protected Spinner spinner;
+    protected List<String> spinnerItems = new ArrayList<>();
 
     protected IGDBDataFetcher api;
 
@@ -40,10 +48,32 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_games);
-        page = 0;
         pageText = findViewById(R.id.gridGamesPage);
         pageTitle = findViewById(R.id.gridGamesTitle);
-        pageContent = findViewById(R.id.gridGamesContent);
+        spinner = findViewById(R.id.gridGamesSpinner);
+
+        for (IGDBPlatform.PlatformType type : IGDBPlatform.PlatformType.values()) {
+            spinnerItems.add(type.toString());
+        }
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                spinner.setSelection(i);
+                lastPlatform = platform;
+                platform = IGDBPlatform.PlatformType.getType((String)spinner.getSelectedItem());
+                lastPage = page;
+                page = 0;
+                pageText.setText(String.format("Page %d", page + 1));
+                afterPlatformChange(platform);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        spinner.setSelection(0);
+        platform = IGDBPlatform.PlatformType.getType((String)spinner.getSelectedItem());
 
         pageText.setText(String.format("Page %d", page + 1));
 
@@ -51,11 +81,13 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
         api = new IGDBDataFetcher(this, new IGDBDataFetcher.OnError() {
             @Override
             public void error(Exception e, String tag) {
-                if (gamesGrid.isShown() && !pageContent.isShown()) {
-                    gamesGrid.setVisibility(View.INVISIBLE);
-                    pageContent.setText(String.format("An error occurred during an API call: %s", e.toString()));
-                    pageContent.setVisibility(View.VISIBLE);
-                }
+                Toast.makeText(getBaseContext(), String.format("An error occurred during an API call: %s", e.toString()), Toast.LENGTH_LONG).show();
+
+                page = lastPage;
+                platform = lastPlatform;
+                pageText.setText(String.format("Page %d", page + 1));
+                spinner.setSelection(spinnerItems.indexOf(lastPlatform.toString()));
+                afterApiError();
             }
         });
         gamesGridAdapter = new GamesGridAdapter(this, games);
@@ -79,6 +111,8 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     @Override
     public void leftSwipe() {
         if (page < MAX_PAGE) {
+            lastPage = page;
+            lastPlatform = platform;
             page += 1;
             this.afterLeftSwipe();
             pageText.setText(String.format("Page %d", page + 1));
@@ -98,6 +132,8 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
     @Override
     public void rightSwipe() {
         if (page > 0) {
+            lastPage = page;
+            lastPlatform = platform;
             page -= 1;
             this.afterRightSwipe();
             pageText.setText(String.format("Page %d", page + 1));
@@ -113,6 +149,13 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
 
     // Performed after the page has been swiped to the right and page logic has been applied (Usually point to fetch previous pages data)
     public void afterRightSwipe() {}
+
+    // Performed once the user changes the platform type from spinner menu
+    // platformType: given platforms type as integer
+    public void afterPlatformChange(IGDBPlatform.PlatformType platformType) {}
+
+    // Performed after the api has caught an error. Good place to retrieve data from previous page / platform selections.
+    public void afterApiError() {}
 
     @Override
     public void topSwipe() {}
