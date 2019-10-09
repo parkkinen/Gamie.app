@@ -3,6 +3,7 @@ package com.example.gamie.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamie.R;
+import com.example.gamie.SingleGameActivity;
 import com.example.gamie.adapters.GamesGridAdapter;
 import com.example.gamie.adapters.GamesGridGestureListener;
 import com.example.gamie.api.IGDBDataFetcher;
@@ -98,6 +100,15 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 gridGestureDetector.onTouchEvent(motionEvent);
                 return false;
+            }
+        });
+        gamesGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                IGDBGame game = games.get(i);
+                Intent singleGameIntent = new Intent(GridGamesActivity.this, SingleGameActivity.class);
+                singleGameIntent.putExtra(SingleGameActivity.SINGLE_GAME_EXTRA, game);
+                startActivity(singleGameIntent);
             }
         });
     }
