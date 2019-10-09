@@ -1,0 +1,83 @@
+package com.example.gamie;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.example.gamie.api.IGDBGame;
+import com.example.gamie.api.IGDBGameMode;
+import com.example.gamie.api.IGDBGenre;
+import com.example.gamie.api.IGDBPlatform;
+import com.example.gamie.api.IGDBScreenshot;
+import com.squareup.picasso.Picasso;
+
+public class SingleGameActivity extends AppCompatActivity {
+    public static final String SINGLE_GAME_EXTRA = "single_game";
+
+    private IGDBGame game;
+
+    private TextView gameTitle;
+    private TextView gameSummary;
+    private TextView gamePlatforms;
+    private TextView gameModes;
+    private TextView gameGenres;
+    private ImageView gameCover;
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_single_game);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey(SINGLE_GAME_EXTRA)) {
+                game = (IGDBGame) extras.getSerializable(SINGLE_GAME_EXTRA);
+                gameTitle = findViewById(R.id.singleGameTitle);
+                gameSummary = findViewById(R.id.singleGameSummary);
+                gamePlatforms = findViewById(R.id.singleGamePlatform);
+                gameModes = findViewById(R.id.singleGameMode);
+                gameGenres = findViewById(R.id.singleGameGenre);
+                gameCover = findViewById(R.id.singleGameCover);
+
+                gameTitle.setText(game.name);
+
+                if (game.summary != null) {
+                    gameSummary.setText(game.summary);
+                }
+
+                if (game.platforms != null && game.platforms.size() > 0) {
+                    gamePlatforms.setText("");
+                    for (IGDBPlatform platform : game.platforms) {
+                        gamePlatforms.append(String.format("%s\n", platform.name));
+                    }
+                }
+
+                if (game.gameModes != null && game.gameModes.size() > 0) {
+                    gameModes.setText("");
+                    for (IGDBGameMode mode: game.gameModes) {
+                        gameModes.append(String.format("%s\n", mode.name));
+                    }
+                }
+                if (game.genres != null && game.genres.size() > 0) {
+                    gameGenres.setText("");
+                    for (IGDBGenre genre: game.genres) {
+                        gameGenres.append(String.format("%s\n", genre.name));
+                    }
+                }
+
+                if (game.coverArt != null) {
+                    Picasso.with(this).load(game.coverArt.getImageUrl(IGDBScreenshot.IGDBScreenshotSize.FHD)).into(gameCover);
+                } else {
+                    gameCover.setImageResource(R.drawable.placeholder_image);
+                }
+            }
+        } else {
+            Toast.makeText(this, "The game information could not be loaded. Returning to home.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+        }
+    }
+}

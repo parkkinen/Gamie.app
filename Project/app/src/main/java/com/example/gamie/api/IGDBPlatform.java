@@ -5,10 +5,11 @@ import android.drm.DrmStore;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IGDBPlatform {
+public class IGDBPlatform implements Serializable {
     public Integer id;
     public String name;
 

@@ -3,10 +3,11 @@ package com.example.gamie.api;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IGDBReleaseDate {
+public class IGDBReleaseDate implements Serializable {
     public Integer id = null;
     public Long date = null;
     public Integer gameId = null;

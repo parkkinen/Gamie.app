@@ -32,15 +32,13 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startActivity(new Intent(this, AllGamesActivity.class));
-        /*
         api = new IGDBDataFetcher(this);
         upcomingGamesIV = findViewById(R.id.upcomingGames_iv);
         newReleasesIV = findViewById(R.id.newReleases_iv);
         recommendedIV = findViewById(R.id.recommended_iv);
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
-        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);*/
+        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
     }
 
     @Override
