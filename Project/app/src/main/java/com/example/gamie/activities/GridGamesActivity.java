@@ -90,7 +90,7 @@ public class GridGamesActivity extends AppCompatActivity implements GamesGridGes
                 afterApiError();
             }
         });
-        gamesGridAdapter = new GamesGridAdapter(this, games);
+        gamesGridAdapter = new GamesGridAdapter(this, R.id.gridPrefView, games);
         gamesGrid = findViewById(R.id.gridGamesView);
         gamesGrid.setAdapter(gamesGridAdapter);
         gamesGrid.setOnTouchListener(new View.OnTouchListener() {

@@ -21,7 +21,7 @@ public class GamesGridAdapter extends BaseAdapter {
     private Context context;
     private List<IGDBGame> games;
 
-    public GamesGridAdapter(Context context, List<IGDBGame> games) {
+    public GamesGridAdapter(Context context, int gridPrefView, List<IGDBGame> games) {
         this.context = context;
         this.games = games;
     }
@@ -48,7 +48,6 @@ public class GamesGridAdapter extends BaseAdapter {
         }
 
         IGDBGame game = (IGDBGame) getItem(i);
-
         CardView cw = view.findViewById(R.id.gridCard);
         ImageView iw = view.findViewById(R.id.gridCardImage);
         TextView tw = view.findViewById(R.id.gridCardTextView);
