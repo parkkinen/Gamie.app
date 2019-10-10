@@ -1,6 +1,7 @@
 package com.example.gamie.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.example.gamie.R;
+import com.example.gamie.SingleGameActivity;
+import com.example.gamie.activities.GridGamesActivity;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBScreenshot;
 import com.example.gamie.preferences.UserPreferences;
@@ -68,6 +71,16 @@ public class GamesGridAdapter extends BaseAdapter {
         ImageView iw = view.findViewById(R.id.gridCardImage);
         TextView tw = view.findViewById(R.id.gridCardTextView);
         ImageButton starBtn = view.findViewById(R.id.gridCardStar);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent singleGameIntent = new Intent(context, SingleGameActivity.class);
+                singleGameIntent.putExtra(SingleGameActivity.SINGLE_GAME_EXTRA, game);
+                singleGameIntent.putExtra(SingleGameActivity.PARENT_CLASS_EXTRA, context.getClass().getName());
+                context.startActivity(singleGameIntent);
+            }
+        });
 
         updateStarButton(starBtn, game.id);
 
