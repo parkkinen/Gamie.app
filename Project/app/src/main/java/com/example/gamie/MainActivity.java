@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.gamie.activities.MenuActivity;
 import com.example.gamie.adapters.GamesPagerAdapter;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
@@ -22,7 +23,7 @@ import java.util.List;
 import me.relex.circleindicator.CircleIndicator;
 
 
-public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates, IGDBDataFetcher.OnError {
+public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates, IGDBDataFetcher.OnError {
     private IGDBDataFetcher api;
     private final String UPCOMING_TAG = "upcoming";
     private final String NEW_TAG = "new";
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     }
 
     @Override
-    public void error(String error, String tag) {
-        System.out.println(error);
+    public void error(Exception e, String tag) {
+        e.printStackTrace();
     }
 }

@@ -44,7 +44,7 @@ public class GamesGridAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.games_grid_game_item, null);
+            view = LayoutInflater.from(context).inflate(R.layout.games_grid_item, null);
         }
 
         IGDBGame game = (IGDBGame) getItem(i);
