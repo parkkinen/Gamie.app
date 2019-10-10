@@ -6,15 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.example.gamie.activities.MenuActivity;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBPlatform;
 import com.example.gamie.api.IGDBReleaseDate;
+import com.example.gamie.preferences.UserPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames {
+public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetGames {
     private IGDBDataFetcher api;
     private final String UPCOMING_TAG = "upcoming";
     private final String NEW_TAG = "new";
@@ -32,15 +34,13 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startActivity(new Intent(this, PreferencesActivity.class));
-        /*
         api = new IGDBDataFetcher(this);
         upcomingGamesIV = findViewById(R.id.upcomingGames_iv);
         newReleasesIV = findViewById(R.id.newReleases_iv);
         recommendedIV = findViewById(R.id.recommended_iv);
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
-        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);*/
+        api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
     }
 
     @Override
