@@ -6,6 +6,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -77,6 +78,12 @@ public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetG
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
         api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
+        
+        List<Integer> preferences = UserPreferences.getUserGamePrefences();
+        if (preferences.size() > 0) {
+            api.getRecommendedGames(this, RECOMMENDED_TAG, UserPreferences.getUserGamePrefences());
+            viewPager_rg.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
