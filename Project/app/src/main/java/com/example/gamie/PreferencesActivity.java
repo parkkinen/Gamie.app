@@ -10,6 +10,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.gamie.activities.GridGamesActivity;
+import com.example.gamie.activities.MenuActivity;
 import com.example.gamie.adapters.GamesGridAdapter;
 import com.example.gamie.adapters.GamesGridGestureListener;
 import com.example.gamie.api.IGDBDataFetcher;
@@ -19,7 +20,7 @@ import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreferencesActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames {
+public class PreferencesActivity extends MenuActivity implements IGDBDataFetcher.OnGetGames {
 
     protected GridView gamesGrid;
     public GamesGridAdapter gamesGridAdapter;
