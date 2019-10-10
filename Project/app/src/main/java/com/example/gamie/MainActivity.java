@@ -11,6 +11,7 @@ import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBPlatform;
 import com.example.gamie.api.IGDBReleaseDate;
+import com.example.gamie.preferences.UserPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
