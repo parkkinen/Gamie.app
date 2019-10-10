@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/smallDefaultMargin"
+        android:textStyle="bold"
         android:gravity="center"
         android:text="games"
         app:layout_constraintBottom_toBottomOf="@+id/gridGamesSpinner"
@@ -31,7 +32,7 @@
 
     <Spinner
         android:id="@+id/gridGamesSpinner"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_margin="@dimen/defaultMargin"
         android:background="@android:drawable/btn_dropdown"

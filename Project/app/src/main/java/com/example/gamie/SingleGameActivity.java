@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.gamie.activities.MenuActivity;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBGameMode;
 import com.example.gamie.api.IGDBGenre;
@@ -14,8 +16,9 @@ import com.example.gamie.api.IGDBPlatform;
 import com.example.gamie.api.IGDBScreenshot;
 import com.squareup.picasso.Picasso;
 
-public class SingleGameActivity extends AppCompatActivity {
+public class SingleGameActivity extends MenuActivity {
     public static final String SINGLE_GAME_EXTRA = "single_game";
+    public static final String PARENT_CLASS_EXTRA = "parent_class";
 
     private IGDBGame game;
 
@@ -25,8 +28,6 @@ public class SingleGameActivity extends AppCompatActivity {
     private TextView gameModes;
     private TextView gameGenres;
     private ImageView gameCover;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,5 +80,28 @@ public class SingleGameActivity extends AppCompatActivity {
             Toast.makeText(this, "The game information could not be loaded. Returning to home.", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
+    }
+
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return getParentActivityImpl();
+    }
+
+    @Override
+    public Intent getParentActivityIntent() {
+        return getParentActivityImpl();
+    }
+
+    private Intent getParentActivityImpl() {
+        Intent parent = getIntent();
+        if (parent.hasExtra(PARENT_CLASS_EXTRA)) {
+            String className = parent.getStringExtra(PARENT_CLASS_EXTRA);
+            try {
+                return new Intent(this, Class.forName(className));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Intent(this, MainActivity.class);
     }
 }

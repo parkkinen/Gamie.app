@@ -10,12 +10,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".SingleGameActivity"></activity>
-        <activity android:name=".AllGamesActivity" />
-        <activity android:name=".activities.GridGamesActivity" />
-        <activity android:name=".NewGamesActivity" />
-        <activity android:name=".UpcomingGamesActivity" />
+        android:theme="@style/AppTheme"
+        android:name=".GamieApplication">
+        <activity android:name=".activities.MenuActivity" />
+        <activity
+            android:name=".RecommendedGamesActivity"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".SingleGameActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AllGamesActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activities.GridGamesActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".NewGamesActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".UpcomingGamesActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".PreferencesActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,5 +42,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
