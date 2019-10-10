@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.example.gamie.AllGamesActivity;
 import com.example.gamie.NewGamesActivity;
 import com.example.gamie.R;
+import com.example.gamie.RecommendedGamesActivity;
 import com.example.gamie.UpcomingGamesActivity;
 
 public class MenuActivity extends AppCompatActivity {
@@ -30,7 +31,7 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(this, AllGamesActivity.class));
                 return true;
             case R.id.recommendedGamesMenu:
-                // startActivity(new Intent(this, null)); TODO: Create link once Recommended games activity is created
+                startActivity(new Intent(this, RecommendedGamesActivity.class));
                 return true;
             case R.id.upcomingGamesMenu:
                 startActivity(new Intent(this, UpcomingGamesActivity.class));
