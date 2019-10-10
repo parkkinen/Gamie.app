@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".SingleGameActivity">
+
+        <ImageView
+            android:id="@+id/singleGameCover"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/singleGameTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/smallDefaultMargin"
+            android:text="Game name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/singleGameCover" />
+
+        <TextView
+            android:id="@+id/singleGameSummaryTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/smallDefaultMargin"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/xsDefaultMargin"
+            android:text="Summary"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/singleGameTitle" />
+
+        <TextView
+            android:id="@+id/singleGameSummary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/smallDefaultMargin"
+            android:layout_marginRight="@dimen/smallDefaultMargin"
+            android:padding="@dimen/xsDefaultMargin"
+            android:text="N/A"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/singleGameSummaryTitle" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/singleGameSummary">
+
+            <TextView
+                android:id="@+id/singleGameGenre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/xsDefaultMargin"
+                android:text="N/A"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintEnd_toEndOf="@+id/singleGameGenreTitle"
+                app:layout_constraintStart_toStartOf="@+id/singleGameGenreTitle"
+                app:layout_constraintTop_toBottomOf="@+id/singleGameGenreTitle" />
+
+            <TextView
+                android:id="@+id/singleGameMode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/xsDefaultMargin"
+                android:text="N/A"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintEnd_toEndOf="@+id/singleGameModeTitle"
+                app:layout_constraintStart_toStartOf="@+id/singleGameModeTitle"
+                app:layout_constraintTop_toBottomOf="@+id/singleGameModeTitle" />
+
+            <TextView
+                android:id="@+id/singleGamePlatform"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/xsDefaultMargin"
+                android:text="N/A"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintEnd_toEndOf="@+id/singleGamePlatformTitle"
+                app:layout_constraintStart_toStartOf="@+id/singleGamePlatformTitle"
+                app:layout_constraintTop_toBottomOf="@+id/singleGamePlatformTitle" />
+
+            <TextView
+                android:id="@+id/singleGameModeTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/smallDefaultMargin"
+                android:background="@color/colorPrimary"
+                android:padding="@dimen/xsDefaultMargin"
+                android:text="Game modes"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintEnd_toStartOf="@+id/singleGameGenreTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/singleGamePlatformTitle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/singleGamePlatformTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/smallDefaultMargin"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                android:padding="@dimen/xsDefaultMargin"
+                android:text="Platforms"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintEnd_toStartOf="@+id/singleGameModeTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/singleGameGenreTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/smallDefaultMargin"
+                android:layout_marginEnd="20dp"
+                android:background="@color/colorPrimary"
+                android:padding="@dimen/xsDefaultMargin"
+                android:text="Genres"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/singleGameModeTitle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/singleGameScreenshotTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/smallDefaultMargin"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/xsDefaultMargin"
+            android:text="Screenshots"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/singleGameScreenshot"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginLeft="@dimen/smallDefaultMargin"
+            android:layout_marginRight="@dimen/smallDefaultMargin"
+            app:layout_constraintTop_toBottomOf="@id/singleGameScreenshotTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="gone">
+        </androidx.viewpager.widget.ViewPager>
+
+        <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/singleGameScreenshotCircleIndicator"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            app:ci_drawable="@color/colorPrimaryDark"
+            app:layout_constraintTop_toBottomOf="@id/singleGameScreenshot"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
