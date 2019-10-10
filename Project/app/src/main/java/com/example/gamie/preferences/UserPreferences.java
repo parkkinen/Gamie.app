@@ -24,11 +24,26 @@ public class UserPreferences {
         sharedPreferences.commit();
     }
 
+    public static void removeUserGamePreferences(Integer gamePref) {
+        List<Integer> prefrences = UserPreferences.getUserGamePrefences();
+        if (prefrences.contains(gamePref)) {
+            prefrences.remove(gamePref);
+        }
+        String newPrefs = UserPreferences.parseGamePref(prefrences);
+        SharedPreferences.Editor editor = GamieApplication.getInstance().getPreferences(GamieApplication.USER_PREFERENCES).edit();
+        editor.putString(USER_GAME_PREFERENCE, newPrefs);
+        editor.apply();
+        editor.commit();
+    }
+
     public static void appendUserGamePreferences(Integer gamePref) {
         SharedPreferences sharedPreferences = GamieApplication.getInstance().getPreferences(GamieApplication.USER_PREFERENCES);
         SharedPreferences.Editor editor = GamieApplication.getInstance().getPreferences(GamieApplication.USER_PREFERENCES).edit();
-        String newPrefs = sharedPreferences.getString(USER_GAME_PREFERENCE, "") + DELIMITER +  UserPreferences.parseGamePref(gamePref);
-        editor.putString(USER_GAME_PREFERENCE, newPrefs);
+        String oldPrefs = sharedPreferences.getString(USER_GAME_PREFERENCE, "");
+        if (!oldPrefs.contains("" + gamePref)) {
+            String newPrefs = oldPrefs + DELIMITER +  UserPreferences.parseGamePref(gamePref);
+            editor.putString(USER_GAME_PREFERENCE, newPrefs);
+        }
         editor.apply();
         editor.commit();
     }

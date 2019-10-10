@@ -12,10 +12,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.gamie.preferences.UserPreferences;
 
 import org.json.JSONArray;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -318,6 +320,33 @@ public class IGDBDataFetcher {
                         this.onError.error(error, tag);
                     }
                 }, gamesOptions);
+    }
+
+
+    // Gets users favourite games from IGDB API based on shared preferences.
+    // onGetGames: OnGetGames interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
+    // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
+    public void getFavouriteGames(@Nullable OnGetGames onGetGames, @Nullable String tag, String... options) {
+        List<Integer> gamePrefences = UserPreferences.getUserGamePrefences();
+        if (gamePrefences.size() > 0) {
+            String whereClause = "where id = (";
+            for (Integer gamePrefId : gamePrefences) {
+                if (gamePrefences.indexOf(gamePrefId) != 0) {
+                    if (!whereClause.contains("" + gamePrefId)) {
+                        whereClause += String.format(",%d", gamePrefId);
+                    }
+                } else {
+                    if (!whereClause.contains("" + gamePrefId)) {
+                        whereClause += gamePrefId;
+                    }
+                }
+            }
+            whereClause += ")";
+            this.getGames(onGetGames, tag, combineOptions(new String[]{ whereClause }, options));
+        } else {
+            onGetGames.games(new ArrayList<IGDBGame>(), tag);
+        }
     }
 
     /* Private methods */
