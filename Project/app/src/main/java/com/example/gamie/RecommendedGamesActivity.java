@@ -2,29 +2,30 @@ package com.example.gamie;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.gamie.activities.GridGamesActivity;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBPlatform;
+import com.example.gamie.preferences.UserPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecommendedGamesActivity extends GridGamesActivity implements IGDBDataFetcher.OnGetGames {
-    private List<Integer> gameIds = new ArrayList<Integer>();
+    private List<Integer> gamePreferences = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.pageTitle.setText("Recommended games");
-        gameIds.add(241);
-        gameIds.add(9083);
-        gameIds.add(1029);
         spinner.setVisibility(View.INVISIBLE);
-        this.api.getRecommendedGames(this, null, gameIds, String.format("limit %d", GAMES_PER_PAGE), String.format("offset %d", page * 10));
+        gamePreferences = UserPreferences.getUserGamePrefences();
+        attemptGettingRecommendations();
     }
 
     @Override
@@ -36,16 +37,29 @@ public class RecommendedGamesActivity extends GridGamesActivity implements IGDBD
 
     @Override
     public void afterLeftSwipe() {
-        this.api.getRecommendedGames(this, null, gameIds, String.format("limit %d", GAMES_PER_PAGE), String.format("offset %d", page * 10));
+        attemptGettingRecommendations();
     }
 
     @Override
     public void afterRightSwipe() {
-        this.api.getRecommendedGames(this, null, gameIds, String.format("limit %d", GAMES_PER_PAGE), String.format("offset %d", page * 10));
+        attemptGettingRecommendations();
     }
 
     @Override
     public void afterApiError() {
-        this.api.getRecommendedGames(this, null, gameIds, String.format("limit %d", GAMES_PER_PAGE), String.format("offset %d", page * 10));
+        attemptGettingRecommendations();
+    }
+
+    private void attemptGettingRecommendations() {
+        if (gamePreferences.size() > 0) {
+            this.api.getRecommendedGames(this, null, gamePreferences, String.format("limit %d", GAMES_PER_PAGE), String.format("offset %d", page * 10));
+        } else {
+            RecommendedGamesActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(RecommendedGamesActivity.this, "You don't currently have any recommendations set on your profile.", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }
