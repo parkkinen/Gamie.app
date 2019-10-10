@@ -4,5 +4,6 @@
     <dimen name="defaultMargin">20dp</dimen>
     <dimen name="smallDefaultMargin">10dp</dimen>
     <dimen name="elevationMargin">15dp</dimen>
+    <dimen name="xsDefaultMargin">5dp</dimen>
     <dimen name="topMargin">50dp</dimen>
 </resources>

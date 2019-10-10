@@ -1,7 +1,6 @@
 package com.example.gamie.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,7 @@ public class GamesGridAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.games_grid_item, null);
+            view = LayoutInflater.from(context).inflate(R.layout.games_grid_game_item, null);
         }
 
         IGDBGame game = (IGDBGame) getItem(i);
@@ -64,6 +63,4 @@ public class GamesGridAdapter extends BaseAdapter {
 
         return view;
     }
-
-
 }

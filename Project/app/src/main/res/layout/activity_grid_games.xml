@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpcomingGamesActivity">
+
+    <TextView
+        android:id="@+id/gridGamesTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/smallDefaultMargin"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="games"
+        app:layout_constraintBottom_toBottomOf="@+id/gridGamesSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gridGamesSpinner" />
+
+    <TextView
+        android:id="@+id/gridGamesPage"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/smallDefaultMargin"
+        android:gravity="center"
+        android:text="page"
+        app:layout_constraintBottom_toBottomOf="@+id/gridGamesSpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gridGamesSpinner"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Spinner
+        android:id="@+id/gridGamesSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_margin="@dimen/defaultMargin"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toStartOf="@+id/gridGamesPage"
+        app:layout_constraintLeft_toRightOf="@id/gridGamesTitle"
+        app:layout_constraintStart_toEndOf="@+id/gridGamesTitle"
+        app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    <GridView
+        android:id="@+id/gridGamesView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/smallDefaultMargin"
+        android:horizontalSpacing="@dimen/smallDefaultMargin"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:useDefaultMargins="true"
+        android:verticalSpacing="@dimen/smallDefaultMargin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridGamesSpinner">
+
+    </GridView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

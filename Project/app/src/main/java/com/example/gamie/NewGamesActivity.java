@@ -9,12 +9,12 @@ import com.example.gamie.api.IGDBPlatform;
 
 import java.util.List;
 
-public class UpcomingGamesActivity extends GridGamesActivity implements IGDBDataFetcher.OnGetGames {
+public class NewGamesActivity extends GridGamesActivity implements IGDBDataFetcher.OnGetGames {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.pageTitle.setText("Upcoming games");
-        this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+        this.pageTitle.setText("New Games");
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 
     @Override
@@ -26,21 +26,21 @@ public class UpcomingGamesActivity extends GridGamesActivity implements IGDBData
 
     @Override
     public void afterLeftSwipe() {
-        this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 
     @Override
     public void afterRightSwipe() {
-        this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 
     @Override
     public void afterPlatformChange(IGDBPlatform.PlatformType platformType) {
-        this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platformType);
     }
 
     @Override
     public void afterApiError() {
-        this.api.getUpcomingGames(this, null, GAMES_PER_PAGE, page * 10, platform);
+        this.api.getNewGames(this, null, GAMES_PER_PAGE, page * 10, platform);
     }
 }

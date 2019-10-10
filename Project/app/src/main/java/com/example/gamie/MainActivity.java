@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.GridView;
@@ -15,6 +14,7 @@ import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBPlatform;
 import com.example.gamie.api.IGDBReleaseDate;
+import com.example.gamie.preferences.UserPreferences;
 
 import java.util.ArrayList;
 import java.util.List;

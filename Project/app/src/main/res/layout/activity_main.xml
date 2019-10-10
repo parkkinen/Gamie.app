@@ -16,7 +16,7 @@
         android:id="@+id/upcomingGames_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/textMargin"
+        android:layout_marginStart="@dimen/defaultMargin"
         android:layout_marginTop="@dimen/defaultMargin"
         android:layout_marginEnd="@dimen/defaultMargin"
         android:text="Upcoming games"

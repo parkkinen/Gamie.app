@@ -5,11 +5,12 @@ import android.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IGDBGame {
+public class IGDBGame implements Serializable {
     public Integer id = null;
     public String name = null;
     public Long created_at = null;

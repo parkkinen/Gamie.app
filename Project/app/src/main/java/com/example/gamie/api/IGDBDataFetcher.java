@@ -1,26 +1,21 @@
 package com.example.gamie.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.TypedArrayUtils;
 
 import com.android.volley.AuthFailureError;
 import com.example.gamie.BuildConfig;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +65,7 @@ public class IGDBDataFetcher {
     }
 
     public interface OnError {
-        void error(String error, String tag);
+        void error(Exception e, String tag);
     }
 
     private OnError onError;
@@ -101,7 +96,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -109,7 +104,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, gamesOptions);
     }
@@ -129,7 +124,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -137,7 +132,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, genreOptions);
     }
@@ -159,7 +154,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -167,7 +162,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, gamesOptions);
     }
@@ -187,7 +182,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -195,7 +190,7 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, platformOptions);
     }
@@ -215,7 +210,7 @@ public class IGDBDataFetcher {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (this.onError != null) {
-                                this.onError.error(e.toString(), tag);
+                                this.onError.error(e, tag);
                             }
                         }
                     }
@@ -223,11 +218,12 @@ public class IGDBDataFetcher {
                 error -> {
                     error.printStackTrace();
                     if (this.onError != null) {
-                        this.onError.error(error.toString(), tag);
+                        this.onError.error(error, tag);
                     }
                 }, rdOptions);
     }
 
+    // TODO: Games could have been fetched straight from first query using fields game.* and etc. Update later.
     // Gets upcoming games from IGDB api by first performing query to search game ids that are upcoming. Then the ids are concatenated into an games query.
     // onGetGames: OnGetGames interface defines what will be done with the result
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
@@ -251,9 +247,10 @@ public class IGDBDataFetcher {
                 whereGameIdOption += ")";
                 fetcher.getGames(onGetGames, tag, whereGameIdOption);
             }
-        }, tag, String.format("where date > %d & platform = %d; sort date desc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+        }, tag, String.format("where date > %d & game.platforms = %d; sort date desc", System.currentTimeMillis() / 1000, platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
     }
 
+    // TODO: Games could have been fetched straight from first query using fields game.* and etc. Update later.
     // Gets games that have their release date set close to present from IGDB api by first performing query to search game ids that are upcoming. Then the ids are concatenated into an games query.
     // onGetGames: OnGetGames interface defines what will be done with the result
     // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
@@ -277,7 +274,50 @@ public class IGDBDataFetcher {
                 whereGameIdOption += ")";
                 fetcher.getGames(onGetGames, tag, whereGameIdOption);
             }
-        }, tag, String.format("where date < %d & platform = %d; sort date asc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+        }, tag, String.format("where date < %d & game.platforms = %d; sort date desc", System.currentTimeMillis() / 1000, platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+    }
+
+    // Gets games based on passed gameId array. Excludes game ids and search similar games to ids by popularity.
+    // onGetGames: OnGetGames interface defines what will be done with the result
+    // tag: tag is an string used for identifying which query result was called (Mainly used if one class uses single OnGetGames interface and you want to return the data to correct object
+    // gameIds: list of game ids that the user likes.
+    // options: optional strings passed to the query which can be used to filter the result. (Follow IGDB documentation) eg. "where id = 0;"
+    public void getRecommendedGames(@Nullable OnGetGames onGetGames, @Nullable String tag, List<Integer> gameIds, String... options) {
+        String similarClause = "where ";
+        String excludeClause = "";
+        for (Integer id : gameIds) {
+            if (gameIds.indexOf(id) != 0) {
+                similarClause += "|";
+            }
+            similarClause += String.format("similar_games.id=%d", id);
+            excludeClause += String.format("&id!=%d", id);
+        }
+        String[] gamesOptions = this.combineOptions(new String[]{
+                String.format("%s%s", similarClause, excludeClause),
+                "fields *, game_modes.name, genres.name, screenshots.url, platforms.name, cover.url",
+                "exclude aggregated_rating,aggregated_rating_count, updated_at, external_games",
+                "sort popularity desc"
+        }, options);
+        this.apiPost(IGDBDataFetcher.GAMES_POSTFIX,
+                response -> {
+                    if (onGetGames != null) {
+                        try {
+                            JSONArray jsonArr = new JSONArray(response);
+                            onGetGames.games(IGDBGame.getGames(jsonArr), tag);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (this.onError != null) {
+                                this.onError.error(e, tag);
+                            }
+                        }
+                    }
+                } ,
+                error -> {
+                    error.printStackTrace();
+                    if (this.onError != null) {
+                        this.onError.error(error, tag);
+                    }
+                }, gamesOptions);
     }
 
     /* Private methods */
