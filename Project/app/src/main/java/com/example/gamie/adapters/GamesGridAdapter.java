@@ -25,10 +25,20 @@ public class GamesGridAdapter extends BaseAdapter {
     private List<IGDBGame> games;
     private List<Integer> preferredGames;
 
+    public interface OnInteraction {
+        void starClicked(int itemPos);
+    }
+
+    private OnInteraction onInteraction;
+
+    public void setOnInteraction(OnInteraction onInteraction) {
+        this.onInteraction = onInteraction;
+    }
+
+
     public GamesGridAdapter(Context context, List<IGDBGame> games) {
         this.context = context;
         this.games = games;
-        this.preferredGames = UserPreferences.getUserGamePrefences();
     }
 
     @Override
@@ -51,6 +61,7 @@ public class GamesGridAdapter extends BaseAdapter {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.games_grid_item, null);
         }
+        this.preferredGames = UserPreferences.getUserGamePrefences();
 
         IGDBGame game = (IGDBGame) getItem(i);
         CardView cw = view.findViewById(R.id.gridCard);
@@ -71,6 +82,9 @@ public class GamesGridAdapter extends BaseAdapter {
                 }
                 preferredGames = UserPreferences.getUserGamePrefences();
                 updateStarButton(starBtn, game.id);
+                if (onInteraction != null) {
+                    onInteraction.starClicked(i);
+                }
             }
         });
         if (game.coverArt != null) {

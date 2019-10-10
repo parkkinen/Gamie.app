@@ -10,24 +10,14 @@
         android:id="@+id/gridPrefTitle"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginLeft="@dimen/xsDefaultMargin"
+        android:layout_marginTop="@dimen/xsDefaultMargin"
         android:gravity="center"
-        android:text="Prefs"
+        android:text="Preferences"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/prefSearchBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/prefSearchBar" />
-
-    <TextView
-        android:id="@+id/gridPrefPage"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="10dp"
-        android:gravity="center"
-        android:text="page"
-        app:layout_constraintBottom_toBottomOf="@+id/prefSearchBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/prefSearchBar"
-        app:layout_constraintVertical_bias="0.0" />
 
 
     <GridView
@@ -60,14 +50,16 @@
 
     <SearchView
         android:id="@+id/prefSearchBar"
-        android:iconifiedByDefault="false"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        app:layout_constraintEnd_toStartOf="@+id/gridPrefPage"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search games"
+        android:layout_marginLeft="@dimen/xsDefaultMargin"
+        android:layout_marginRight="@dimen/xsDefaultMargin"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/gridPrefTitle"
         app:layout_constraintStart_toEndOf="@+id/gridPrefTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        android:queryHint="Search games"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <GridView
         android:id="@+id/favoriteGameGrid"

@@ -39,8 +39,11 @@ public class UserPreferences {
     public static void appendUserGamePreferences(Integer gamePref) {
         SharedPreferences sharedPreferences = GamieApplication.getInstance().getPreferences(GamieApplication.USER_PREFERENCES);
         SharedPreferences.Editor editor = GamieApplication.getInstance().getPreferences(GamieApplication.USER_PREFERENCES).edit();
-        String newPrefs = sharedPreferences.getString(USER_GAME_PREFERENCE, "") + DELIMITER +  UserPreferences.parseGamePref(gamePref);
-        editor.putString(USER_GAME_PREFERENCE, newPrefs);
+        String oldPrefs = sharedPreferences.getString(USER_GAME_PREFERENCE, "");
+        if (!oldPrefs.contains("" + gamePref)) {
+            String newPrefs = oldPrefs + DELIMITER +  UserPreferences.parseGamePref(gamePref);
+            editor.putString(USER_GAME_PREFERENCE, newPrefs);
+        }
         editor.apply();
         editor.commit();
     }
