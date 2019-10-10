@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.example.gamie.AllGamesActivity;
 import com.example.gamie.NewGamesActivity;
+import com.example.gamie.PreferencesActivity;
 import com.example.gamie.R;
 import com.example.gamie.RecommendedGamesActivity;
 import com.example.gamie.UpcomingGamesActivity;
@@ -40,7 +41,7 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(this, NewGamesActivity.class));
                 return true;
             case R.id.preferencesMenu:
-                // startActivity(new Intent(this, null)); TODO: Create link once Preferences activity is created
+                startActivity(new Intent(this, PreferencesActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

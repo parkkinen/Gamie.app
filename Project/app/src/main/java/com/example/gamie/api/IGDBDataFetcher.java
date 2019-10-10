@@ -330,15 +330,20 @@ public class IGDBDataFetcher {
     public void getFavouriteGames(@Nullable OnGetGames onGetGames, @Nullable String tag, String... options) {
         List<Integer> gamePrefences = UserPreferences.getUserGamePrefences();
         if (gamePrefences.size() > 0) {
-            String whereClause = "where (";
+            String whereClause = "where id = (";
             for (Integer gamePrefId : gamePrefences) {
                 if (gamePrefences.indexOf(gamePrefId) != 0) {
-                    whereClause += String.format(",%d", gamePrefId);
+                    if (!whereClause.contains("" + gamePrefId)) {
+                        whereClause += String.format(",%d", gamePrefId);
+                    }
                 } else {
-                    whereClause += gamePrefId;
+                    if (!whereClause.contains("" + gamePrefId)) {
+                        whereClause += gamePrefId;
+                    }
                 }
             }
-            this.getGames(onGetGames, tag, whereClause);
+            whereClause += ")";
+            this.getGames(onGetGames, tag, combineOptions(new String[]{ whereClause }, options));
         } else {
             onGetGames.games(new ArrayList<IGDBGame>(), tag);
         }
