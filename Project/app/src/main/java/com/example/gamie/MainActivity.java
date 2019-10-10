@@ -6,8 +6,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.gamie.activities.MenuActivity;
 import com.example.gamie.adapters.GamesPagerAdapter;
@@ -28,6 +30,8 @@ public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetG
     private final String UPCOMING_TAG = "upcoming";
     private final String NEW_TAG = "new";
     private final String RECOMMENDED_TAG = "recommended";
+
+    private TextView recommendedTitle;
 
     private GamesPagerAdapter adapter_ug;
     private GamesPagerAdapter adapter_nr;
@@ -50,6 +54,8 @@ public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetG
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         api = new IGDBDataFetcher(this, this);
+
+        recommendedTitle = findViewById(R.id.recommended_tv);
 
         viewPager_ug = findViewById(R.id.upcomingGames_vp);
         viewPager_nr = findViewById(R.id.newReleases_vp);
@@ -77,6 +83,14 @@ public class MainActivity extends MenuActivity implements IGDBDataFetcher.OnGetG
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
         api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
+        
+        List<Integer> preferences = UserPreferences.getUserGamePrefences();
+        if (preferences.size() > 0) {
+            api.getRecommendedGames(this, RECOMMENDED_TAG, UserPreferences.getUserGamePrefences());
+            viewPager_rg.setVisibility(View.VISIBLE);
+            circleIndicator_rg.setVisibility(View.VISIBLE);
+            recommendedTitle.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
