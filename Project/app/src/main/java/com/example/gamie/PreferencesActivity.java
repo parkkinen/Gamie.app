@@ -15,6 +15,7 @@ import com.example.gamie.adapters.GamesGridAdapter;
 import com.example.gamie.adapters.GamesGridGestureListener;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
+import com.example.gamie.preferences.UserPreferences;
 
 import java.net.IDN;
 import java.util.ArrayList;
@@ -22,13 +23,16 @@ import java.util.List;
 
 public class PreferencesActivity extends MenuActivity implements IGDBDataFetcher.OnGetGames {
 
-    protected GridView gamesGrid;
-    public GamesGridAdapter gamesGridAdapter;
-    protected List<IGDBGame> games = new ArrayList<>();
-    protected GestureDetectorCompat gridGestureDetector;
-    protected TextView pageTitle;
-    protected TextView pageText;
-    protected SearchView searchBar;
+    private GridView gamesGrid;
+    private GridView favoriteGrid;
+    private GamesGridAdapter gamesGridAdapter;
+    private GamesGridAdapter favoriteGridAdapter;
+    private List<IGDBGame> games = new ArrayList<>();
+    private List<IGDBGame> preferredGames = new ArrayList<>();
+    private GestureDetectorCompat gridGestureDetector;
+    private TextView pageTitle;
+    private TextView pageText;
+    private SearchView searchBar;
     private IGDBDataFetcher api;
 
     @Override
@@ -43,9 +47,11 @@ public class PreferencesActivity extends MenuActivity implements IGDBDataFetcher
         pageTitle = findViewById(R.id.gridPrefTitle);
         searchBar = findViewById(R.id.prefSearchBar);
         gamesGrid = findViewById(R.id.gridPrefView);
+        favoriteGrid = findViewById(R.id.favoriteGameGrid);
 
         //adapter
-        gamesGridAdapter = new GamesGridAdapter (this, R.id.gridPrefView, games);
+        gamesGridAdapter = new GamesGridAdapter (this, games);
+        favoriteGridAdapter = new GamesGridAdapter(this, preferredGames);
 
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -55,18 +61,36 @@ public class PreferencesActivity extends MenuActivity implements IGDBDataFetcher
 
             @Override
             public boolean onQueryTextChange(String query) {
-                api.getGames(PreferencesActivity.this,null, "search \"" + query + "\"", "limit 4");
+                api.getGames(PreferencesActivity.this,"search", "search \"" + query + "\"", "limit 4");
                 return false;
             }
         });
 
 
         gamesGrid.setAdapter(gamesGridAdapter);
+        favoriteGrid.setAdapter(favoriteGridAdapter);
+        String where = "where id = (";
+        List<Integer> prefs = UserPreferences.getUserGamePrefences();
+        for (Integer gamePref : prefs) {
+            if (prefs.indexOf(gamePref) != 0) {
+                where += "," + gamePref;
+            } else {
+                where += gamePref;
+            }
+        }
+        where += ")";
+        api.getGames(this, "recommended", "limit 50", where);
     }
     @Override
     public void games(List<IGDBGame> games, String tag) {
-        this.games.clear();
-        this.games.addAll(games);
-        gamesGridAdapter.notifyDataSetChanged();
+        if (tag.equals("search")) {
+            this.games.clear();
+            this.games.addAll(games);
+            gamesGridAdapter.notifyDataSetChanged();
+        } else if (tag.equals("recommended")) {
+            this.preferredGames.clear();
+            this.preferredGames.addAll(games);
+            this.favoriteGridAdapter.notifyDataSetChanged();
+        }
     }
 }

@@ -25,7 +25,7 @@ public class GamesGridAdapter extends BaseAdapter {
     private List<IGDBGame> games;
     private List<Integer> preferredGames;
 
-    public GamesGridAdapter(Context context, int gridPrefView, List<IGDBGame> games) {
+    public GamesGridAdapter(Context context, List<IGDBGame> games) {
         this.context = context;
         this.games = games;
         this.preferredGames = UserPreferences.getUserGamePrefences();
