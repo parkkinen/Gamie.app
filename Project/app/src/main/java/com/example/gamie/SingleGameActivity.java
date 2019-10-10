@@ -1,20 +1,30 @@
 package com.example.gamie;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gamie.activities.MenuActivity;
+import com.example.gamie.adapters.GamesPagerAdapter;
+import com.example.gamie.adapters.GamesScreenshotPagerAdapter;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBGameMode;
 import com.example.gamie.api.IGDBGenre;
 import com.example.gamie.api.IGDBPlatform;
 import com.example.gamie.api.IGDBScreenshot;
 import com.squareup.picasso.Picasso;
+
+import me.relex.circleindicator.CircleIndicator;
 
 public class SingleGameActivity extends MenuActivity {
     public static final String SINGLE_GAME_EXTRA = "single_game";
@@ -74,6 +84,22 @@ public class SingleGameActivity extends MenuActivity {
                     Picasso.with(this).load(game.coverArt.getImageUrl(IGDBScreenshot.IGDBScreenshotSize.FHD)).into(gameCover);
                 } else {
                     gameCover.setImageResource(R.drawable.placeholder_image);
+                }
+
+                if (game.screenshots != null && game.screenshots.size() > 0) {
+                    TextView title = findViewById(R.id.singleGameScreenshotTitle);
+                    ViewPager pager = findViewById(R.id.singleGameScreenshot);
+                    CircleIndicator indicator = findViewById(R.id.singleGameScreenshotCircleIndicator);
+
+                    GamesScreenshotPagerAdapter pagerAdapter = new GamesScreenshotPagerAdapter(this, game.screenshots);
+                    pager.setAdapter(pagerAdapter);
+
+                    indicator.setViewPager(pager);
+                    pagerAdapter.registerDataSetObserver(indicator.getDataSetObserver());
+                    title.setVisibility(View.VISIBLE);
+                    pager.setVisibility(View.VISIBLE);
+                    indicator.setVisibility(View.VISIBLE);
+                    pagerAdapter.notifyDataSetChanged();
                 }
             }
         } else {
