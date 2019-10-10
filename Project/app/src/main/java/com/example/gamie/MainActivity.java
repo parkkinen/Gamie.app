@@ -1,13 +1,16 @@
 package com.example.gamie;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.gamie.adapters.GamesPagerAdapter;
 import com.example.gamie.api.IGDBDataFetcher;
 import com.example.gamie.api.IGDBGame;
 import com.example.gamie.api.IGDBPlatform;
@@ -16,11 +19,26 @@ import com.example.gamie.api.IGDBReleaseDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates {
+import me.relex.circleindicator.CircleIndicator;
+
+
+public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.OnGetGames, IGDBDataFetcher.OnGetReleaseDates, IGDBDataFetcher.OnError {
     private IGDBDataFetcher api;
     private final String UPCOMING_TAG = "upcoming";
     private final String NEW_TAG = "new";
     private final String RECOMMENDED_TAG = "recommended";
+
+    private GamesPagerAdapter adapter_ug;
+    private GamesPagerAdapter adapter_nr;
+    private GamesPagerAdapter adapter_rg;
+
+    private ViewPager viewPager_ug;
+    private ViewPager viewPager_nr;
+    private ViewPager viewPager_rg;
+
+    private CircleIndicator circleIndicator_ug;
+    private CircleIndicator circleIndicator_nr;
+    private CircleIndicator circleIndicator_rg;
 
     private List<IGDBGame> upcomingGames = new ArrayList<>();
     private List<IGDBGame> newGames = new ArrayList<>();
@@ -30,7 +48,31 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        api = new IGDBDataFetcher(this);
+        api = new IGDBDataFetcher(this, this);
+
+        viewPager_ug = findViewById(R.id.upcomingGames_vp);
+        viewPager_nr = findViewById(R.id.newReleases_vp);
+        viewPager_rg = findViewById(R.id.recommended_vp);
+
+        circleIndicator_ug = findViewById(R.id.circleIndicator_ug);
+        circleIndicator_nr = findViewById(R.id.circleIndicator_nr);
+        circleIndicator_rg = findViewById(R.id.circleIndicator_rg);
+
+        adapter_ug = new GamesPagerAdapter(this, upcomingGames);
+        adapter_nr = new GamesPagerAdapter(this, newGames);
+        adapter_rg = new GamesPagerAdapter(this, recommendedGames);
+
+        viewPager_ug.setAdapter(adapter_ug);
+        viewPager_nr.setAdapter(adapter_nr);
+        viewPager_rg.setAdapter(adapter_rg);
+
+        adapter_ug.registerDataSetObserver(circleIndicator_ug.getDataSetObserver());
+        adapter_nr.registerDataSetObserver(circleIndicator_nr.getDataSetObserver());
+        adapter_rg.registerDataSetObserver(circleIndicator_rg.getDataSetObserver());
+
+        circleIndicator_ug.setViewPager(viewPager_ug);
+        circleIndicator_nr.setViewPager(viewPager_nr);
+        circleIndicator_rg.setViewPager(viewPager_rg);
 
         api.getUpcomingGames(this, UPCOMING_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
         api.getNewGames(this, NEW_TAG, 10, 0, IGDBPlatform.PlatformType.PC);
@@ -39,13 +81,20 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
     @Override
     public void games(List<IGDBGame> games, String tag) {
         if (tag.equals(UPCOMING_TAG)) {
-            this.upcomingGames = games;
+            upcomingGames.clear();
+            upcomingGames.addAll(games);
+            adapter_ug.notifyDataSetChanged();
         } else if (tag.equals(NEW_TAG)) {
-            this.newGames = games;
+            newGames.clear();
+            newGames.addAll(games);
+            adapter_nr.notifyDataSetChanged();
         } else if (tag.equals(RECOMMENDED_TAG)) {
-            this.recommendedGames = games;
+            recommendedGames.clear();
+            recommendedGames.addAll(games);
+            adapter_rg.notifyDataSetChanged();
         }
     }
+
 
     @Override
     public void releaseDates(List<IGDBReleaseDate> releaseDates, String tag) {
@@ -62,5 +111,10 @@ public class MainActivity extends AppCompatActivity implements IGDBDataFetcher.O
         whereGameIdOption += "); limit 8";
 
         api.getGames(MainActivity.this, tag, whereGameIdOption);
+    }
+
+    @Override
+    public void error(String error, String tag) {
+        System.out.println(error);
     }
 }

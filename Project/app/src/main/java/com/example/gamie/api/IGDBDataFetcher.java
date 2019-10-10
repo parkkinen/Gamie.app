@@ -277,7 +277,7 @@ public class IGDBDataFetcher {
                 whereGameIdOption += ")";
                 fetcher.getGames(onGetGames, tag, whereGameIdOption);
             }
-        }, tag, String.format("where date < %d & platform = &d; sort date asc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
+        }, tag, String.format("where date < %d & platform = %d; sort date asc", System.currentTimeMillis(), platformType.getType()), String.format("offset %d", offset), String.format("limit %d", limit));
     }
 
     /* Private methods */
