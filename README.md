@@ -1,4 +1,4 @@
-# Mobile_Client_Data_Transfer
+# Gamie, app for Android
 Repository for the Exercises and Projects
 
 Project
