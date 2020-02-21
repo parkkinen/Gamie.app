@@ -1,5 +1,8 @@
 # Gamie, app for Android
-# Demo video inside the repo
+
+Check out the demo video in repository!
+
+
 Repository for the Exercises and Projects
 
 Project
